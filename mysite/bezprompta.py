@@ -28,7 +28,6 @@ text_splitter = RecursiveCharacterTextSplitter(
 
 chunks = text_splitter.split_text(str(document))
 
-# Промпт оставлен БЕЗ изменений
 promp = ChatPromptTemplate(
     [
         (
@@ -59,14 +58,12 @@ async def answer_for_question(text: QuestionShema):
     if not question:
         raise HTTPException(status_code=400, detail='Маалымат жок экен')
 
-    # Проверка: есть ли слова из вопроса в nnn.txt (без изменения промпта)
     words = [word.lower() for word in question.split() if len(word) > 2]
     has_match = any(word in context_text.lower() for word in words)
 
     if not has_match:
         return {"answer": "Я не знаю."}
 
-    # Если совпадение есть — отправляем в модель
     response = chain.invoke({'text': question})
     return {"answer": response}
 
